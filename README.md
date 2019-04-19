@@ -30,6 +30,8 @@ Now you can connect to the Sling's webconsole via http://localhost:8080/system/c
 
 ## Issues
 
+### javax.xml.stream OSGi Dependency
+
 When this is launched w/o any tweaking then the launcher will list a bunch of missing OSGi dependencies
 most of them around javax.* packages.
 I found a workaround by listing all the missing packages into a property called **org.osgi.framework.system.packages.extra**
@@ -44,23 +46,32 @@ packages. If I removed for example javax.xml.stream from the property it will no
 Boot Delegation* but it is not listed as exported underneath. When I start Sling 11 then it will be listed there
 as exported.
 
-### Images
+This makes me assume the issue for my fix in the first place was that the System Bundle would not export these
+dependencies.
 
-#### 1. Feature Model System Bundle Top
+#### Images
+
+##### 1. Feature Model System Bundle Top
 
 ![FM: Top of System Bundle Details](./images/fm.felix.system.bundle.top.png "FM: Top of System Bundle Details")
 
-#### 2. Feature Model System Bundle Missing Exports
+##### 2. Feature Model System Bundle Missing Exports
 
 ![FM: Missing Exports in System Bundle Details](./images/fm.felix.system.bundle.non-exports.png "FM: Missing Exports in System Bundle Details")
 
-#### 3. Sling 11 System Bundle Top
+##### 3. Sling 11 System Bundle Top
 
 ![Sling: Top of System Bundle Details](./images/sling.felix.system.bundle.top.png "Sling: Top of System Bundle Details")
 
-#### 4. Sling 11 Model System Bundle Exports
+##### 4. Sling 11 Model System Bundle Exports
 
 ![Sling: Exports in System Bundle Details](./images/sling.felix.system.bundle.exports.png "Sling: Exports in System Bundle Details")
+
+### Sling Usage
+
+The 3 non-activating bundles should be prevent Sling from starting but when I open http://localhost:8080 I get the
+**If you start me up** page and it stays there. I assume for whatever reason Sling never gets past the starting up
+phase. Any link to Sling like Composum is returning to this starting up page.
 
 ## Creating the Feature Models
 
