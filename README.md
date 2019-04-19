@@ -44,6 +44,24 @@ packages. If I removed for example javax.xml.stream from the property it will no
 Boot Delegation* but it is not listed as exported underneath. When I start Sling 11 then it will be listed there
 as exported.
 
+### Images
+
+#### 1. Feature Model System Bundle Top
+
+![FM: Top of System Bundle Details](./images/fm.felix.system.bundle.top.png "FM: Top of System Bundle Details")
+
+#### 2. Feature Model System Bundle Missing Exports
+
+![FM: Missing Exports in System Bundle Details](./images/fm.felix.system.bundle.non-exports.png "FM: Missing Exports in System Bundle Details")
+
+#### 3. Sling 11 System Bundle Top
+
+![Sling: Top of System Bundle Details](./images/sling.felix.system.bundle.top.png "Sling: Top of System Bundle Details")
+
+#### 4. Sling 11 Model System Bundle Exports
+
+![Sling: Exports in System Bundle Details](./images/sling.felix.system.bundle.exports.png "Sling: Exports in System Bundle Details")
+
 ## Creating the Feature Models
 
 ### Preparation
