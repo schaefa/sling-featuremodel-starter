@@ -7,6 +7,8 @@ This page contains instructions on how to build and run the Sling based on a Fea
 Download the launcher:
 
 ```
+curl http://repo1.maven.org/maven2/org/apache/sling/org.apache.sling.feature.launcher/1.0.0/org.apache.sling.feature.extension.content-1.0.0.jar -O
+curl http://repo1.maven.org/maven2/org/apache/sling/org.apache.sling.feature.launcher/1.0.0/org.apache.sling.feature.extension.apiregions-1.0.0.jar -O
 curl http://repo1.maven.org/maven2/org/apache/sling/org.apache.sling.feature.launcher/1.0.0/org.apache.sling.feature.launcher-1.0.0.jar -O
 ```
 
@@ -22,7 +24,8 @@ Launch the aggregate feature `webconsole.http`:
 
 ```
 rm -rf launcher && \
-java -jar org.apache.sling.feature.launcher-1.0.0.jar \
+java -cp org.apache.sling.feature.extension.content-1.0.0.jar:org.apache.sling.feature.extension.apiregions-1.0.0.jar:org.apache.sling.feature.launcher-1.0.0.jar \
+     org.apache.sling.feature.launcher.impl.Main \
      -f target/slingfeature-tmp/feature-example-runtime.json
 ```
 
@@ -46,32 +49,21 @@ packages. If I removed for example javax.xml.stream from the property it will no
 Boot Delegation* but it is not listed as exported underneath. When I start Sling 11 then it will be listed there
 as exported.
 
-This makes me assume the issue for my fix in the first place was that the System Bundle would not export these
-dependencies.
+#### Fix
 
-#### Images
-
-##### 1. Feature Model System Bundle Top
-
-![FM: Top of System Bundle Details](./images/fm.felix.system.bundle.top.png "FM: Top of System Bundle Details")
-
-##### 2. Feature Model System Bundle Missing Exports
-
-![FM: Missing Exports in System Bundle Details](./images/fm.felix.system.bundle.non-exports.png "FM: Missing Exports in System Bundle Details")
-
-##### 3. Sling 11 System Bundle Top
-
-![Sling: Top of System Bundle Details](./images/sling.felix.system.bundle.top.png "Sling: Top of System Bundle Details")
-
-##### 4. Sling 11 Model System Bundle Exports
-
-![Sling: Exports in System Bundle Details](./images/sling.felix.system.bundle.exports.png "Sling: Exports in System Bundle Details")
+I could resolve that issue by adding the following properties:
+```
+"felix.systempackages.substitution":"true",
+"felix.systempackages.calculate.uses":"true"
+```
 
 ### Sling Usage
 
 The 3 non-activating bundles should be prevent Sling from starting but when I open http://localhost:8080 I get the
 **If you start me up** page and it stays there. I assume for whatever reason Sling never gets past the starting up
 phase. Any link to Sling like Composum is returning to this starting up page.
+
+It looks like that the repository is not created during the launch.
 
 ## Creating the Feature Models
 
