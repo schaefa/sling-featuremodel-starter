@@ -100,6 +100,9 @@ http://localhost:8080/system/sling/form/login
 After login in I am redirected back to the starter page but now when I click on **Browse Content** I am abble to
 see Composum browser even tough I still see the Exception about the Writer Already CLosed.
 
+**Note**: the same thing has to be done for Slingshot. I had to force the login to Slingshot1 in order to make it
+work.
+
 ## Creating the Feature Models
 
 ### Preparation
