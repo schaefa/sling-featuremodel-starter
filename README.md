@@ -65,6 +65,41 @@ phase. Any link to Sling like Composum is returning to this starting up page.
 
 It looks like that the repository is not created during the launch.
 
+#### Fix
+
+As it turns out the JCR Repository is not created because the **repository.home** property is not set on the
+**SegmentNodeStoreService** for **oak-tar** is creating a new configuration which is then disregarded. So I changed
+```
+    "org.apache.jackrabbit.oak.segment.SegmentNodeStoreService.runmodes.oak_tar":{
+      "name":"Default NodeStore"
+    }
+```
+to this:
+```
+    "org.apache.jackrabbit.oak.segment.SegmentNodeStoreService":{
+      "name":"Default NodeStore"
+    }
+```
+This will the cause the JCR Repository to be created under /launcher/repository.
+
+### Composum Inaccessible
+
+After Sling comes up and I go to the starter page (http://localhost:8080) the page tells me that I am logged
+in a **Admin** even though I did not do anything. Clicking on **logout** is not logging me out and still tells me
+that I am logged in as Admin.
+
+When clicking on **Browse Content** I will get redirect back to the starter page and I see an error log about a
+**SlingHttpServletResponseImpl$WriterAlreadyClosedException**.
+
+#### Fix
+
+To access Composum I must force the login manually by going to:
+```
+http://localhost:8080/system/sling/form/login
+```
+After login in I am redirected back to the starter page but now when I click on **Browse Content** I am abble to
+see Composum browser even tough I still see the Exception about the Writer Already CLosed.
+
 ## Creating the Feature Models
 
 ### Preparation

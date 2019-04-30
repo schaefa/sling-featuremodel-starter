@@ -126,7 +126,7 @@
       "db":"sling",
       "mongouri":"mongodb://localhost:27017"
     },
-    "org.apache.jackrabbit.oak.segment.SegmentNodeStoreService.runmodes.oak_tar":{
+    "org.apache.jackrabbit.oak.segment.SegmentNodeStoreService":{
       "name":"Default NodeStore"
     }
   }

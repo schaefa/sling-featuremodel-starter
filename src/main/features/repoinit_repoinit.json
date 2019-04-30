@@ -14,11 +14,6 @@
       "start-level":"20"
     }
   ],
-  "configurations":{
-    "org.apache.sling.jcr.repoinit.impl.RepositoryInitializer":{
-      "references":"model@repoinit:context:/resources/provisioning/model.txt"
-    }
-  },
   "repoinit:TEXT|true":[
     "# general",
     "create path (sling:OrderedFolder) /content",
