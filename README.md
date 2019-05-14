@@ -4,13 +4,13 @@ This page contains instructions on how to build and run the Sling based on a Fea
 
 ## Prepare
 
-Download the launcher:
-
-```
-curl http://repo1.maven.org/maven2/org/apache/sling/org.apache.sling.feature.launcher/1.0.0/org.apache.sling.feature.extension.content-1.0.0.jar -O
-curl http://repo1.maven.org/maven2/org/apache/sling/org.apache.sling.feature.launcher/1.0.0/org.apache.sling.feature.extension.apiregions-1.0.0.jar -O
-curl http://repo1.maven.org/maven2/org/apache/sling/org.apache.sling.feature.launcher/1.0.0/org.apache.sling.feature.launcher-1.0.0.jar -O
-```
+Because of the pending official release this is migrated to 1.0.2 but as
+of now this must be built locally with the 1.0.2 tags. After the built
+the artifacts of **feature api regions, extension content and launcher**
+must be copied into this folder:
+* org.apache.sling.feature.apiregions-1.0.1-SNAPSHOT.jar
+* org.apache.sling.feature.extension.content-1.0.2.jar
+* org.apache.sling.feature.launcher-1.0.2.jar
 
 ## Build and Launch
 
@@ -23,31 +23,19 @@ mvn clean install
 Launch the aggregate feature `webconsole.http`:
 
 ```
-rm -rf launcher && \
-java -cp org.apache.sling.feature.extension.content-1.0.0.jar:org.apache.sling.feature.extension.apiregions-1.0.0.jar:org.apache.sling.feature.launcher-1.0.0.jar \
+java -cp org.apache.sling.feature.extension.content-1.0.2.jar:org.apache.sling.feature.extension.apiregions-1.0.2.jar:org.apache.sling.feature.launcher-1.0.2.jar \
      org.apache.sling.feature.launcher.impl.Main \
      -f target/slingfeature-tmp/feature-example-runtime.json
 ```
 
-Now you can connect to the Sling's webconsole via http://localhost:8080/system/console
+Now you can login to Sling with: **http://localhost:8080**.
 
 ## Issues
 
-### javax.xml.stream OSGi Dependency
+### javax.xml.stream OSGi Dependency (FIXED)
 
 When this is launched w/o any tweaking then the launcher will list a bunch of missing OSGi dependencies
 most of them around javax.* packages.
-I found a workaround by listing all the missing packages into a property called **org.osgi.framework.system.packages.extra**
-and this solves most of the issues with **javax.xml.stream** package using by these bundles:
-
-* org.apache.servicemix.bundles.jaxb-impl: Apache ServiceMix :: Bundles :: jaxb-impl
-* org.apache.servicemix.specs.jaxb-api-2.2: Apache ServiceMix :: Specs :: JAXB API 2.2
-* org.apache.servicemix.specs.jaxws-api-2.2: Apache ServiceMix :: Specs :: JAXWS API 2.2
-
-Further investigation reveals that the Felix System Bundle (org.apache.felix.framework) is not exporting javax.*
-packages. If I removed for example javax.xml.stream from the property it will not be listed as *Overwritten by
-Boot Delegation* but it is not listed as exported underneath. When I start Sling 11 then it will be listed there
-as exported.
 
 #### Fix
 
@@ -57,11 +45,7 @@ I could resolve that issue by adding the following properties:
 "felix.systempackages.calculate.uses":"true"
 ```
 
-### Sling Usage
-
-The 3 non-activating bundles should be prevent Sling from starting but when I open http://localhost:8080 I get the
-**If you start me up** page and it stays there. I assume for whatever reason Sling never gets past the starting up
-phase. Any link to Sling like Composum is returning to this starting up page.
+### Sling Usage (FIXED)
 
 It looks like that the repository is not created during the launch.
 
@@ -82,7 +66,7 @@ to this:
 ```
 This will the cause the JCR Repository to be created under /launcher/repository.
 
-### Composum Inaccessible
+### Composum Inaccessible (FIXED)
 
 After Sling comes up and I go to the starter page (http://localhost:8080) the page tells me that I am logged
 in a **Admin** even though I did not do anything. Clicking on **logout** is not logging me out and still tells me
@@ -93,15 +77,9 @@ When clicking on **Browse Content** I will get redirect back to the starter page
 
 #### Fix
 
-To access Composum I must force the login manually by going to:
-```
-http://localhost:8080/system/sling/form/login
-```
-After login in I am redirected back to the starter page but now when I click on **Browse Content** I am abble to
-see Composum browser even tough I still see the Exception about the Writer Already CLosed.
-
-**Note**: the same thing has to be done for Slingshot. I had to force the login to Slingshot1 in order to make it
-work.
+As of now when hitting the home page the Login link is there and it will
+redirect to the login page and afterwards the page indicates that one
+is logged in.
 
 ## Creating the Feature Models
 
@@ -258,4 +236,24 @@ mvn clean install  \
 6. Add this property **framework-properties** to the launchpad_launchpad.json file:
 ```
     "org.osgi.framework.system.packages.extra":"javax.annotation.processing,javax.crypto,javax.crypto.spec,javax.imageio,javax.imageio.metadata,javax.imageio.plugins.jpeg,javax.imageio.stream,javax.jcr,javax.jcr.lock,javax.management.modelmbean,javax.naming,javax.jcr.query,javax.jcr.nodetype,javax.jcr.observation,javax.jcr.security,javax.jcr.version,javax.lang.model.element,javax.lang.model.util,javax.lang.model.type,javax.mail,javax.management,javax.management.openmbean,javax.management.remote,javax.lang.model,javax.naming.directory,javax.naming.ldap,javax.naming.spi,javax.net,javax.net.ssl,javax.print,javax.print.attribute,javax.rmi.ssl,javax.security.auth,javax.security.auth.callback,javax.security.auth.login,javax.security.auth.x500,javax.security.auth.spi,javax.sql,javax.security.sasl,javax.swing,javax.swing.border,javax.swing.event,javax.swing.filechooser,javax.swing.tree,javax.swing.table,javax.swing.text,javax.transaction.xa,javax.tools,javax.xml.bind,javax.xml.bind.annotation,javax.xml.namespace,javax.xml.bind.annotation,javax.xml,javax.xml.datatype,javax.xml.namespace,javax.xml.parsers,javax.xml.stream,javax.xml.stream.events,javax.xml.stream.util,javax.xml.transform,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.transform.stax,javax.xml.transform.stream,javax.xml.validation,javax.xml.xpath,javax.script,org.ietf.jgss,org.xml.sax,org.xml.org.xml.sax.ext,org.xml.sax.helpers,org.xml.sax.ext,org.w3c.dom,org.w3c.dom.bootstrap,org.w3c.dom.css,org.w3c.dom.events,org.w3c.dom.html,org.w3c.dom.ls,org.w3c.dom.ranges,org.w3c.dom.traversal,org.w3c.dom.views",
+```
+
+### Incorporating JCR Package Initializer
+
+To install packages converted using the **CP to FM Converter** one neeed
+to install the JCR Package Initializer which is not officially released.
+To make this work I added the file **sling_packageinit.json** which this
+content:
+```
+{
+  "id": "${project.groupId}:${project.artifactId}:slingosgifeature:sling_packageinit:${project.version}",
+  "variables":{
+  },
+  "bundles":[
+    {
+      "id":"org.apache.sling:org.apache.sling.jcr.packageinit:0.0.1-SNAPSHOT",
+      "start-level":"10"
+    }
+  ]
+}
 ```

@@ -35,7 +35,7 @@ under the License.
             <plugin>
                 <groupId>org.apache.sling</groupId>
                 <artifactId>slingfeature-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.2</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
