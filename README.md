@@ -1,34 +1,45 @@
 # Feature Model based Sling Starter
 
-This page contains instructions on how to build and run the Sling based on a Feature Model.
+This page contains instructions on how to build and run the Sling as a Feature Model.
 
 # Setup
 
-This project depends on the latest code from the **sling-org-apache-sling-feature-modelconverter**
-project on branch **standalone-app**. Change to the project an build with:
-```
-mvn clean install
-```
-Then check out the **sling-org-apache-sling-starter** project as this will
-be the source of the conversion.
+This project depends on the latest releases of Sling Feature projects including the Sling
+Feature Maven Plugin as well as the **Sling Feature CP Converter and Sling Feature
+Converter Maven Plugin** which must be built locally first before they can be used.
+
+For that please clone these project and built with `mvn clean install` on the
+**master** branch:
+* sling-org-apache-sling-feature-cpconverter
+* sling-feature-converter-maven-plugin
+
+The source for the Sling conversion is provided by the Provisioning Model
+of the Sling Starter Project. So you need to clone this project as well
+but there is no built required:
+* sling-org-apache-sling-starter
 
 # Conversion and Launch
 
-This project provides a convenience script to convert and launch Sling with
-FM launcher: **do.sling.conversion.sh**.
-The argument file **pm2fm.sling.arfile** contains all the arguments necessary
-to do the conversion with the Sling Feature Model Converter. Adjust the
-**-i** flag as this points to your local Sling Launchpad Folder that is
-providing the PM files. The rest should not be changed.
+The project is converting assembling and launching (optional) through a
+Maven build.
 
-**Attention**: in this file we assume that SLING_DEV_HOME is pointing to the
-folder where Sling is developed. Set the env variable or replace $SLING_DEV_HOME
-with the correct folder path.
+To just build the project:
+```
+mvn clean install -P launch -Dsling.starter.folder=&lt;Path to your Sling Starter Project>
+```
+To build and launch:
+```
+mvn clean install -P launch -P launch -Dsling.starter.folder=&lt;Path to your Sling Starter Project>
+```
 
-Build and Launch with:
-```
-sh do.sling.conversion.sh
-```
+**ATTENTION**: with `mvn clean` only the target folder is removed but
+the Sling Launcher folder (*./aluncher*) is not touched otherwise a clean
+rebuilt would whip away the Sling instance (that is the reason why the
+launcher folder is not in the target folder).
+
+If there is any issue with the build when starting up stop Sling, copy
+away the original **launcher** folder and then rebuilt and launch the
+project.
 
 ## Notes for Sling
 
